@@ -12,8 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-class CvsIoUtility {
-    static List<Map<String, String>> readCsvFile(File file) throws IOException {
+public class CvsIoUtility {
+    public static List<Map<String, String>> readCsvFile(File file) throws IOException {
         List<Map<String, String>> listOfMappedValues = new LinkedList<>();
         CsvMapper mapper = new CsvMapper();
         CsvSchema schema = CsvSchema.emptySchema().withHeader().withColumnSeparator(';');
@@ -26,7 +26,7 @@ class CvsIoUtility {
         return listOfMappedValues;
     }
 
-    static void writeCsvFile(List<Map<String, String>> listOfMappedValues, String fileName) throws IOException {
+    public static void writeCsvFile(List<Map<String, String>> listOfMappedValues, String fileName) throws IOException {
         CsvMapper mapper = new CsvMapper();
         PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
 
