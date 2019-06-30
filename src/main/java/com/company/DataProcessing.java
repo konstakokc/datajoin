@@ -78,7 +78,7 @@ public class DataProcessing {
         return Math.abs(ChronoUnit.SECONDS.between(getTimeFromMap(firstReading), getTimeFromMap(secondReading)))  <= eventDurationInSeconds;
     }
 
-    private static LocalDateTime getTimeFromMap(Map<String, String> map) {
+    public static LocalDateTime getTimeFromMap(Map<String, String> map) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         DateTimeFormatter timeFormatter = new DateTimeFormatterBuilder()
                 .appendValue(HOUR_OF_DAY, 1, 2, SignStyle.NEVER)
