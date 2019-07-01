@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class CvsIoUtility {
         List<Map<String, String>> listOfMappedValues = new LinkedList<>();
         CsvMapper mapper = new CsvMapper();
         CsvSchema schema = CsvSchema.emptySchema().withHeader().withColumnSeparator(';');
-        MappingIterator<Map<String, String>> iterator = mapper.readerFor(Map.class)
+        MappingIterator<Map<String, String>> iterator = mapper.readerFor(LinkedHashMap.class)
                 .with(schema)
                 .readValues(file);
         while (iterator.hasNext()) {

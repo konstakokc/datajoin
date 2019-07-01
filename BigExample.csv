@@ -1,4 +1,4 @@
-Number;Family;Date;Time;Date_gen;Gen_time;Parameter 1;Parameter 2;Parameter 3;Zone;Device
+Number;Name;Date;Time;Date_gen;Gen_time;Parameter 1;Parameter 2;Parameter 3;Zone;Device
 Д348МП;Булычев;11.06.2018;10:20;11.06.2018;;1;;;1;a
 Д348МП;Булычев;11.06.2018;10:20:15;11.06.2018;;;ololo;;1;b
 Д348МП;Булычев;11.06.2018;10:20:18;11.06.2018;;;;d12;1;c

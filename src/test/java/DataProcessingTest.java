@@ -84,7 +84,7 @@ class DataProcessingTest {
         List<Map<String, String>> testCase = Arrays.asList(
                 new HashMap<String, String>() {{
                     put("Number", "Т483АС");
-                    put("Family", "vasya");
+                    put("Name", "vasya");
                     put("Surname", "petrov");
                     put("Date", "11.06.2018");
                     put("Time", "10:20");
@@ -93,7 +93,7 @@ class DataProcessingTest {
                 }},
                 new HashMap<String, String>() {{
                     put("Number", "Т483АС");
-                    put("Family", "vasya");
+                    put("Name", "vasya");
                     put("Surname", "petrov");
                     put("Date", "11.06.2018");
                     put("Time", "10:20:15");
@@ -105,7 +105,7 @@ class DataProcessingTest {
         List<Map<String, String>> testCaseSolved = Arrays.asList(
                 new HashMap<String, String>() {{
                     put("Number", "Т483АС");
-                    put("Family", "vasya");
+                    put("Name", "vasya");
                     put("Surname", "petrov");
                     put("Date", "11.06.2018");
                     put("Time", "10:20");
@@ -123,7 +123,7 @@ class DataProcessingTest {
         List<Map<String, String>> testCase = Arrays.asList(
                 new HashMap<String, String>() {{
                     put("Number", "Т483АС");
-                    put("Family", "vasya");
+                    put("Name", "vasya");
                     put("Surname", "petrov");
                     put("Date", "11.06.2018");
                     put("Time", "10:20");
@@ -133,7 +133,7 @@ class DataProcessingTest {
                 }},
                 new HashMap<String, String>() {{
                     put("Number", "Т483АС");
-                    put("Family", "vasya");
+                    put("Name", "vasya");
                     put("Surname", "petrov");
                     put("Date", "11.06.2018");
                     put("Time", "10:20:15");
@@ -143,7 +143,7 @@ class DataProcessingTest {
                 }},
                 new HashMap<String, String>() {{
                     put("Number", "Т483АС");
-                    put("Family", "vasya");
+                    put("Name", "vasya");
                     put("Surname", "petrov");
                     put("Date", "11.06.2018");
                     put("Time", "10:21");
@@ -155,7 +155,7 @@ class DataProcessingTest {
         List<Map<String, String>> testCaseSolved = Arrays.asList(
                 new HashMap<String, String>() {{
                     put("Number", "Т483АС");
-                    put("Family", "vasya");
+                    put("Name", "vasya");
                     put("Surname", "petrov");
                     put("Date", "11.06.2018");
                     put("Time", "10:20");
@@ -184,25 +184,25 @@ class DataProcessingTest {
             put("Date", "11.06.2018");
             put("Time", "10:20");
         }};
-        assertEquals(LocalTime.of(10, 20), DataProcessing.getTimeFromMap(fourDigitTime).toLocalTime());
+        assertEquals(LocalTime.of(10, 20), DataProcessing.getDateTimeFromMap(fourDigitTime).toLocalTime());
 
         Map<String, String> sixDigitTime = new HashMap<String, String>() {{
             put("Date", "11.06.2018");
             put("Time", "10:20:15");
         }};
-        assertEquals(LocalTime.of(10, 20, 15), DataProcessing.getTimeFromMap(sixDigitTime).toLocalTime());
+        assertEquals(LocalTime.of(10, 20, 15), DataProcessing.getDateTimeFromMap(sixDigitTime).toLocalTime());
 
         Map<String, String> threeDigitTime = new HashMap<String, String>() {{
             put("Date", "11.06.2018");
             put("Time", "9:20");
         }};
-        assertEquals(LocalTime.of(9, 20), DataProcessing.getTimeFromMap(threeDigitTime).toLocalTime());
+        assertEquals(LocalTime.of(9, 20), DataProcessing.getDateTimeFromMap(threeDigitTime).toLocalTime());
 
         Map<String, String> fiveDigitTime = new HashMap<String, String>() {{
             put("Date", "11.06.2018");
             put("Time", "9:20:15");
         }};
-        assertEquals(LocalTime.of(9, 20, 15), DataProcessing.getTimeFromMap(fiveDigitTime).toLocalTime());
+        assertEquals(LocalTime.of(9, 20, 15), DataProcessing.getDateTimeFromMap(fiveDigitTime).toLocalTime());
     }
 
     @Test
@@ -211,12 +211,12 @@ class DataProcessingTest {
             put("Date", "11.06.2018");
             put("Time", "10:20");
         }};
-        assertEquals(LocalDate.of(2018, 6, 11), DataProcessing.getTimeFromMap(date).toLocalDate());
+        assertEquals(LocalDate.of(2018, 6, 11), DataProcessing.getDateTimeFromMap(date).toLocalDate());
 
         Map<String, String> dateTime = new HashMap<String, String>() {{
             put("Date", "11.06.2018");
             put("Time", "10:20:15");
         }};
-        assertEquals(LocalDateTime.of(2018, 6, 11, 10, 20, 15), DataProcessing.getTimeFromMap(dateTime));
+        assertEquals(LocalDateTime.of(2018, 6, 11, 10, 20, 15), DataProcessing.getDateTimeFromMap(dateTime));
     }
 }
