@@ -104,8 +104,6 @@ public class DataProcessing {
     }
 
     private static boolean isSingleEvent(Map<String, String> firstReading, Map<String, String> secondReading, Map<String, List<String>> zones) {
-        //        (timeСheck + idCheck ) => join
-        //        Zone/device-Check ? License-expiration Check?
         return timeCheck(firstReading, secondReading, 300) &&
                idCheck(firstReading, secondReading) &&
                zoneCheck(firstReading, secondReading, zones);
