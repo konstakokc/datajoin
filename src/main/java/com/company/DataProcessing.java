@@ -35,6 +35,41 @@ public class DataProcessing {
         return destination;
     }
 
+    public static void fillNamesAndNumbersWithDateCheck(List<Map<String, String>> source, List<Map<String, String>> destination) {
+        for (Map<String, String> map : destination) {
+            if (map.get("Name").equals("NULL") ^ map.get("Number").equals("NULL")) {
+                String missingColumn;
+                String presentColumn;
+                String replacement = "NULL";
+                if (map.get("Name").equals("NULL")) {
+                    missingColumn = "Name";
+                    presentColumn = "Number";
+                } else {
+                    missingColumn = "Number";
+                    presentColumn = "Name";
+                }
+                LocalDate date = getDateTimeFromMap(map).toLocalDate();
+                boolean unique = false;
+                for (Map<String, String> sourceMap : source) {
+                    if (map.get(presentColumn).equals(sourceMap.get(presentColumn))) {
+                        if (date.isAfter(getDateFromMapByFieldName(sourceMap, "Beg date")) && date.isBefore(getDateFromMapByFieldName(sourceMap, "End date"))) {
+                            if (unique) {
+                                unique = false;
+                                break;
+                            } else {
+                                unique = true;
+                                replacement = sourceMap.get(missingColumn);
+                            }
+                        }
+                    }
+                }
+                if (unique) {
+                    map.replace(missingColumn, replacement);
+                }
+            }
+        }
+    }
+
     private static String getMissingValue(List<Map<String, String>> source, String missingKey, String presentKey, String presentValue) {
         for (Map<String, String> mappedValues : source) {
             if (mappedValues.get(presentKey).equals(presentValue)){
@@ -75,11 +110,10 @@ public class DataProcessing {
     }
 
     private static boolean timeCheck(Map<String, String> firstReading, Map<String, String> secondReading, int eventDurationInSeconds) {
-        return Math.abs(ChronoUnit.SECONDS.between(getTimeFromMap(firstReading), getTimeFromMap(secondReading)))  <= eventDurationInSeconds;
+        return Math.abs(ChronoUnit.SECONDS.between(getDateTimeFromMap(firstReading), getDateTimeFromMap(secondReading)))  <= eventDurationInSeconds;
     }
 
-    public static LocalDateTime getTimeFromMap(Map<String, String> map) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    public static LocalDateTime getDateTimeFromMap(Map<String, String> map) {
         DateTimeFormatter timeFormatter = new DateTimeFormatterBuilder()
                 .appendValue(HOUR_OF_DAY, 1, 2, SignStyle.NEVER)
                 .appendLiteral(":")
@@ -90,12 +124,17 @@ public class DataProcessing {
                 .toFormatter();
 
         if (!map.get("Date").isEmpty() && !map.get("Time").isEmpty()) {
-            return LocalDateTime.of(LocalDate.parse(map.get("Date"), dateFormatter), LocalTime.parse(map.get("Time"), timeFormatter));
+            return LocalDateTime.of(getDateFromMapByFieldName(map, "Date"), LocalTime.parse(map.get("Time"), timeFormatter));
         } else
-            return LocalDateTime.of(LocalDate.parse(map.get("Date_gen"), dateFormatter), LocalTime.parse(map.get("Gen_time"), timeFormatter));
+            return LocalDateTime.of(getDateFromMapByFieldName(map, "Date_gen"), LocalTime.parse(map.get("Gen_time"), timeFormatter));
+    }
+
+    private static LocalDate getDateFromMapByFieldName(Map<String, String> map, String dateFieldName) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return LocalDate.parse(map.get(dateFieldName), dateFormatter);
     }
 
     private static boolean idCheck(Map<String, String> firstReading, Map<String, String> secondReading) {
-        return (firstReading.get("Number").equals(secondReading.get("Number")) && firstReading.get("Family").equals(secondReading.get("Family")));
+        return (firstReading.get("Number").equals(secondReading.get("Number")) && firstReading.get("Name").equals(secondReading.get("Name")));
     }
 }
