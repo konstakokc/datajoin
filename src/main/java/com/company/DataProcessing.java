@@ -140,13 +140,13 @@ public class DataProcessing {
         return (firstReading.get("Number").equals(secondReading.get("Number")) && firstReading.get("Name").equals(secondReading.get("Name")));
     }
 
-    public static boolean zoneCheck(Map<String, String> firstReading, Map<String, String> secondReading, Map<String, List<String>> zones) {
+    private static boolean zoneCheck(Map<String, String> firstReading, Map<String, String> secondReading, Map<String, List<String>> zones) {
         boolean isZoneAndDeviceValid = zones.get(firstReading.get("Zone")).contains(firstReading.get("Device")) && zones.get(secondReading.get("Zone")).contains(secondReading.get("Device"));
         boolean isSameZoneAndDifferentDevice = firstReading.get("Zone").equals(secondReading.get("Zone")) && !firstReading.get("Device").equals(secondReading.get("Device"));
         return isZoneAndDeviceValid && isSameZoneAndDifferentDevice;
     }
 
-    public static Map<String, List<String>> zonesConverter(List<Map<String, String>> listOfZones) {
+    private static Map<String, List<String>> zonesConverter(List<Map<String, String>> listOfZones) {
         Map<String, List<String>> mapOfZones = new HashMap<>();
 
         String zoneName = listOfZones.get(0).get("Zone");

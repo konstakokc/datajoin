@@ -9,14 +9,42 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DataProcessingTest {
     private static final String BIG_INPUT_FILE = "BigExample.csv";
     private static final String BIG_NAMES_DB = "Database.csv";
     private static final String INPUT_FILE = "testCase.csv";
     private static final String NAMES_DB = "testdb.csv";
+    private static final String ZONES_DB = "Zones.csv";
     private static final String OUTPUT_FILE = INPUT_FILE.replace(".csv", "") + "Solved.csv";
+
+    private static List<Map<String, String>> zones = Arrays.asList(
+            new HashMap<String, String>() {{
+                put("Zone", "1");
+                put("Device", "a");
+            }},
+            new HashMap<String, String>() {{
+                put("Zone", "1");
+                put("Device", "b");
+            }},
+            new HashMap<String, String>() {{
+                put("Zone", "1");
+                put("Device", "c");
+            }},
+            new HashMap<String, String>() {{
+                put("Zone", "2");
+                put("Device", "d");
+            }},
+            new HashMap<String, String>() {{
+                put("Zone", "2");
+                put("Device", "e");
+            }},
+            new HashMap<String, String>() {{
+                put("Zone", "3");
+                put("Device", "f");
+            }}
+    );
 
     @Test
     void fillMissingFromSourceSimpleTest() {
@@ -90,6 +118,8 @@ class DataProcessingTest {
                     put("Time", "10:20");
                     put("Device1", "");
                     put("Device2", "123");
+                    put("Zone", "1");
+                    put("Device", "a");
                 }},
                 new HashMap<String, String>() {{
                     put("Number", "Т483АС");
@@ -99,6 +129,8 @@ class DataProcessingTest {
                     put("Time", "10:20:15");
                     put("Device1", "456");
                     put("Device2", "");
+                    put("Zone", "1");
+                    put("Device", "b");
                 }}
         );
 
@@ -111,10 +143,12 @@ class DataProcessingTest {
                     put("Time", "10:20");
                     put("Device1", "456");
                     put("Device2", "123");
+                    put("Zone", "1");
+                    put("Device", "a");
                 }}
         );
 
-        List<Map<String, String>> result = DataProcessing.joinEvents(testCase);
+        List<Map<String, String>> result = DataProcessing.joinEvents(testCase, zones);
         assertEquals(testCaseSolved, result);
     }
 
@@ -130,6 +164,8 @@ class DataProcessingTest {
                     put("Device1", "");
                     put("Device2", "123");
                     put("Device3", "");
+                    put("Zone", "1");
+                    put("Device", "a");
                 }},
                 new HashMap<String, String>() {{
                     put("Number", "Т483АС");
@@ -140,6 +176,8 @@ class DataProcessingTest {
                     put("Device1", "456");
                     put("Device2", "");
                     put("Device3", "");
+                    put("Zone", "1");
+                    put("Device", "b");
                 }},
                 new HashMap<String, String>() {{
                     put("Number", "Т483АС");
@@ -150,6 +188,8 @@ class DataProcessingTest {
                     put("Device1", "456");
                     put("Device2", "");
                     put("Device3", "789");
+                    put("Zone", "1");
+                    put("Device", "c");
                 }}
         );
         List<Map<String, String>> testCaseSolved = Arrays.asList(
@@ -162,16 +202,19 @@ class DataProcessingTest {
                     put("Device1", "456");
                     put("Device2", "123");
                     put("Device3", "789");
+                    put("Zone", "1");
+                    put("Device", "a");
                 }}
         );
-        assertEquals(testCaseSolved, DataProcessing.joinEvents(testCase));
+        assertEquals(testCaseSolved, DataProcessing.joinEvents(testCase, zones));
     }
 
     @Test
     void eventJoinTestWithFile() {
         try {
             List<Map<String, String>> exampleData = CvsIoUtility.readCsvFile(new File(BIG_INPUT_FILE));
-            List<Map<String, String>> result = DataProcessing.joinEvents(exampleData);
+            List<Map<String, String>> zones = CvsIoUtility.readCsvFile(new File(ZONES_DB));
+            List<Map<String, String>> result = DataProcessing.joinEvents(exampleData, zones);
             CvsIoUtility.writeCsvFile(result, OUTPUT_FILE);
         } catch (IOException e) {
             e.printStackTrace();
