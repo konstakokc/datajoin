@@ -79,7 +79,7 @@ public class DataProcessing {
         return "NULL";
     }
 
-    public static List<Map<String, String>> joinEvents(List<Map<String, String>> listOfMaps) {
+    public static List<Map<String, String>> joinEvents(List<Map<String, String>> listOfMaps, List<Map<String, String>> zones) {
         List<Map<String, String>> joinedList = new ArrayList<>();
 
         for (int i = 0; i < listOfMaps.size(); i++) {
@@ -88,7 +88,7 @@ public class DataProcessing {
             if (i + 1 == listOfMaps.size()) {
                 joinedList.add(listOfMaps.get(i));
             } else {
-                while (isSingleEvent(currentElement, listOfMaps.get(i + 1))) {
+                while (isSingleEvent(currentElement, listOfMaps.get(i + 1), zonesConverter(zones))) {
                     for (String key : currentElement.keySet()) {
                         currentElement.merge(key, listOfMaps.get(i + 1).get(key), (oldVal, newVal) -> oldVal.isEmpty() ? newVal : oldVal);
                     }
@@ -103,10 +103,12 @@ public class DataProcessing {
         return joinedList;
     }
 
-    private static boolean isSingleEvent(Map<String, String> firstReading, Map<String, String> secondReading) {
+    private static boolean isSingleEvent(Map<String, String> firstReading, Map<String, String> secondReading, Map<String, List<String>> zones) {
         //        (timeСheck + idCheck ) => join
         //        Zone/device-Check ? License-expiration Check?
-        return timeCheck(firstReading, secondReading, 300) && idCheck(firstReading, secondReading);
+        return timeCheck(firstReading, secondReading, 300) &&
+               idCheck(firstReading, secondReading) &&
+               zoneCheck(firstReading, secondReading, zones);
     }
 
     private static boolean timeCheck(Map<String, String> firstReading, Map<String, String> secondReading, int eventDurationInSeconds) {
@@ -136,5 +138,31 @@ public class DataProcessing {
 
     private static boolean idCheck(Map<String, String> firstReading, Map<String, String> secondReading) {
         return (firstReading.get("Number").equals(secondReading.get("Number")) && firstReading.get("Name").equals(secondReading.get("Name")));
+    }
+
+    public static boolean zoneCheck(Map<String, String> firstReading, Map<String, String> secondReading, Map<String, List<String>> zones) {
+        boolean isZoneAndDeviceValid = zones.get(firstReading.get("Zone")).contains(firstReading.get("Device")) && zones.get(secondReading.get("Zone")).contains(secondReading.get("Device"));
+        boolean isSameZoneAndDifferentDevice = firstReading.get("Zone").equals(secondReading.get("Zone")) && !firstReading.get("Device").equals(secondReading.get("Device"));
+        return isZoneAndDeviceValid && isSameZoneAndDifferentDevice;
+    }
+
+    public static Map<String, List<String>> zonesConverter(List<Map<String, String>> listOfZones) {
+        Map<String, List<String>> mapOfZones = new HashMap<>();
+
+        String zoneName = listOfZones.get(0).get("Zone");
+        List<String> devices = new ArrayList<>();
+
+        for (Map<String, String> zone : listOfZones) {
+            if (zoneName.equals(zone.get("Zone"))) {
+                devices.add(zone.get("Device"));
+                mapOfZones.put(zoneName, new ArrayList<>(devices));
+            } else {
+                devices.clear();
+                zoneName = zone.get("Zone");
+                devices.add(zone.get("Device"));
+                mapOfZones.put(zoneName, new ArrayList<>(devices));
+            }
+        }
+        return mapOfZones;
     }
 }
