@@ -92,6 +92,10 @@ public class DataProcessing {
                     for (String key : currentElement.keySet()) {
                         currentElement.merge(key, listOfMaps.get(i + 1).get(key), (oldVal, newVal) -> oldVal.isEmpty() ? newVal : oldVal);
                     }
+                    if (currentElement.containsKey("Violation")) {
+                        if (currentElement.get("Violation").equals("Yes") || listOfMaps.get(i + 1).get("Violation").equals("Yes"))
+                            currentElement.replace("Violation", "Yes");
+                    }
                     i++;
                     if (i + 1 == listOfMaps.size()) {
                         break;
